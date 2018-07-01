@@ -59,7 +59,7 @@
     
     CGImageRef resizedCGImage = CGBitmapContextCreateImage(context);
     
-    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:UIImageOrientationUp];
+    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:self.imageOrientation];
     
     CGContextRelease(context);
     CGImageRelease(resizedCGImage);
@@ -84,7 +84,7 @@
     
     CGImageRef resizedCGImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, (CFDictionaryRef)options);
     
-    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:UIImageOrientationUp];
+    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:self.imageOrientation];
     
     CFRelease(imageSource);
     CGImageRelease(resizedCGImage);
