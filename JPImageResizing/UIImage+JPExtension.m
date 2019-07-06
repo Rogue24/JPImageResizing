@@ -25,7 +25,7 @@
 - (UIImage *)jp_uiResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
     if (size.width >= self.size.width ||
         size.height >= self.size.height) return self;
-    if (scale <= 0) scale = [UIScreen mainScreen].scale;
+    if (scale <= 0) scale = self.scale;
     @autoreleasepool {
         UIGraphicsBeginImageContextWithOptions(size, NO, scale);
         [self drawInRect:CGRectMake(0, 0, size.width, size.height)];
@@ -36,7 +36,7 @@
 }
 
 - (UIImage *)jp_cgResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
-    if (scale <= 0) scale = [UIScreen mainScreen].scale;
+    if (scale <= 0) scale = self.scale;
     size.width *= scale;
     size.height *= scale;
     if (size.width >= self.size.width ||
@@ -62,7 +62,7 @@
 }
 
 - (UIImage *)jp_ioResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
-    if (scale <= 0) scale = [UIScreen mainScreen].scale;
+    if (scale <= 0) scale = self.scale;
     CGFloat maxPixelSize = MAX(size.width, size.height) * scale;
     if (maxPixelSize >= self.size.width ||
         maxPixelSize >= self.size.height) return self;

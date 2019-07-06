@@ -26,8 +26,8 @@
     
     self.originImage = self.originImageView.image;
     
-//    self.resizedScale = [UIScreen mainScreen].scale;
     self.resizedScale = self.originImage.scale;
+    self.resizedScale = [UIScreen mainScreen].scale;
     
     CGFloat w = 300;
     CGFloat h = 300 * (self.originImage.size.height / self.originImage.size.width);
