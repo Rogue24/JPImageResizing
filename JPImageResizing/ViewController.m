@@ -25,11 +25,15 @@
     [super viewDidLoad];
     
     self.originImage = self.originImageView.image;
-    self.resizedScale = 1;
+    
+//    self.resizedScale = [UIScreen mainScreen].scale;
+    self.resizedScale = self.originImage.scale;
     
     CGFloat w = 300;
     CGFloat h = 300 * (self.originImage.size.height / self.originImage.size.width);
     self.resizedSize = CGSizeMake(w, h);
+    
+    NSLog(@"origin size: %@, scale: %lf", NSStringFromCGSize(self.originImage.size), self.originImage.scale);
 }
 
 - (IBAction)uiAction:(id)sender {
@@ -39,7 +43,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.uiImageView.image = image;
             NSTimeInterval finishTimeInt = [[NSDate date] timeIntervalSince1970];
-            NSLog(@"size: %@, ui耗时: %lf", NSStringFromCGSize(image.size), finishTimeInt - beginTimeInt);
+            NSLog(@"uiResize size: %@, scale: %lf, 耗时: %lf", NSStringFromCGSize(image.size), image.scale, finishTimeInt - beginTimeInt);
         });
     });
 }
@@ -51,7 +55,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.cgImageView.image = image;
             NSTimeInterval finishTimeInt = [[NSDate date] timeIntervalSince1970];
-            NSLog(@"size: %@, cg耗时: %lf", NSStringFromCGSize(image.size), finishTimeInt - beginTimeInt);
+            NSLog(@"cgResize size: %@, scale: %lf, 耗时: %lf", NSStringFromCGSize(image.size), image.scale, finishTimeInt - beginTimeInt);
         });
     });
 }
@@ -63,7 +67,7 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             self.ioImageView.image = image;
             NSTimeInterval finishTimeInt = [[NSDate date] timeIntervalSince1970];
-            NSLog(@"size: %@, io耗时: %lf", NSStringFromCGSize(image.size), finishTimeInt - beginTimeInt);
+            NSLog(@"ioResize size: %@, scale: %lf, 耗时: %lf", NSStringFromCGSize(image.size), image.scale, finishTimeInt - beginTimeInt);
         });
     });
 }
