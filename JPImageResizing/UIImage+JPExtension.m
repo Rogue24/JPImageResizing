@@ -10,37 +10,42 @@
 
 @implementation UIImage (JPExtension)
 
-- (UIImage *)jp_uiResizeImageWithSize:(CGSize)size {
-    return [self jp_uiResizeImageWithSize:size scale:0];
+#pragma makr - ui
+
+- (UIImage *)jp_uiResizeImageWithScale:(CGFloat)scale {
+    return [self jp_uiResizeImageWithLogicWidth:(self.size.width * scale)];
 }
 
-- (UIImage *)jp_cgResizeImageWithSize:(CGSize)size {
-    return [self jp_cgResizeImageWithSize:size scale:0];
-}
-
-- (UIImage *)jp_ioResizeImageWithSize:(CGSize)size {
-    return [self jp_ioResizeImageWithSize:size scale:0];
-}
-
-- (UIImage *)jp_uiResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
-    if (size.width >= self.size.width ||
-        size.height >= self.size.height) return self;
-    if (scale <= 0) scale = self.scale;
+- (UIImage *)jp_uiResizeImageWithLogicWidth:(CGFloat)logicWidth {
+    if (logicWidth >= self.size.width) return self;
+    CGFloat w = logicWidth;
+    CGFloat h = w * self.jp_hwRatio;
     @autoreleasepool {
-        UIGraphicsBeginImageContextWithOptions(size, NO, scale);
-        [self drawInRect:CGRectMake(0, 0, size.width, size.height)];
+        UIGraphicsBeginImageContextWithOptions(CGSizeMake(w, h), NO, self.scale);
+        [self drawInRect:CGRectMake(0, 0, w, h)];
         UIImage *resizedImage = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
         return resizedImage;
     }
 }
 
-- (UIImage *)jp_cgResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
-    if (scale <= 0) scale = self.scale;
-    size.width *= scale;
-    size.height *= scale;
-    if (size.width >= self.size.width ||
-        size.height >= self.size.height) return self;
+- (UIImage *)jp_uiResizeImageWithPixelWidth:(CGFloat)pixelWidth {
+    return [self jp_uiResizeImageWithLogicWidth:(pixelWidth / self.scale)];
+}
+
+#pragma makr - cg
+
+- (UIImage *)jp_cgResizeImageWithScale:(CGFloat)scale {
+    return [self jp_cgResizeImageWithLogicWidth:(self.size.width * scale)];
+}
+
+- (UIImage *)jp_cgResizeImageWithLogicWidth:(CGFloat)logicWidth {
+    return [self jp_cgResizeImageWithPixelWidth:(logicWidth * self.scale)];
+}
+
+- (UIImage *)jp_cgResizeImageWithPixelWidth:(CGFloat)pixelWidth {
+    if (pixelWidth >= (self.size.width * self.scale)) return self;
+    CGFloat pixelHeight = pixelWidth * self.jp_hwRatio;
     
     CGImageRef cgImage = self.CGImage;
     if (!cgImage) return nil;
@@ -49,11 +54,11 @@
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
     CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
     
-    CGContextRef context = CGBitmapContextCreate(nil, (size_t)size.width, (size_t)size.height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+    CGContextRef context = CGBitmapContextCreate(nil, (size_t)pixelWidth, (size_t)pixelHeight, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGContextDrawImage(context, CGRectMake(0, 0, size.width, size.height), cgImage);
+    CGContextDrawImage(context, CGRectMake(0, 0, pixelWidth, pixelHeight), cgImage);
     CGImageRef resizedCGImage = CGBitmapContextCreateImage(context);
-    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:self.imageOrientation];
+    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:self.scale orientation:self.imageOrientation];
     
     CGContextRelease(context);
     CGImageRelease(resizedCGImage);
@@ -61,27 +66,55 @@
     return resizedImage;
 }
 
-- (UIImage *)jp_ioResizeImageWithSize:(CGSize)size scale:(CGFloat)scale {
-    if (scale <= 0) scale = self.scale;
-    CGFloat maxPixelSize = MAX(size.width, size.height) * scale;
-    if (maxPixelSize >= self.size.width ||
-        maxPixelSize >= self.size.height) return self;
+#pragma makr - io
+
+- (UIImage *)jp_ioResizeImageWithScale:(CGFloat)scale isPNGType:(BOOL)isPNGType {
+    return [self jp_ioResizeImageWithLogicWidth:(self.size.width * scale) isPNGType:isPNGType];
+}
+
+- (UIImage *)jp_ioResizeImageWithLogicWidth:(CGFloat)logicWidth isPNGType:(BOOL)isPNGType {
+    return [self jp_ioResizeImageWithPixelWidth:(logicWidth * self.scale) isPNGType:isPNGType];
+}
+
+- (UIImage *)jp_ioResizeImageWithPixelWidth:(CGFloat)pixelWidth isPNGType:(BOOL)isPNGType {
+    if (pixelWidth >= (self.size.width * self.scale)) return self;
     
-    NSData *data = UIImagePNGRepresentation(self);
+    NSData *data = isPNGType ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, 1);
     if (!data) return nil;
     CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)data, nil);
+    
+    CGFloat maxPixelValue = (self.jp_hwRatio > 1.0) ? (pixelWidth * self.jp_hwRatio) : pixelWidth;
     // 因为kCGImageSourceCreateThumbnailFromImageAlways会一直创建缩略图，造成内存浪费
     // 所以使用kCGImageSourceCreateThumbnailFromImageIfAbsent
     NSDictionary *options = @{(id)kCGImageSourceCreateThumbnailWithTransform : @(YES),
                               (id)kCGImageSourceCreateThumbnailFromImageIfAbsent : @(YES),
-                              (id)kCGImageSourceThumbnailMaxPixelSize : @(maxPixelSize)};
+                              (id)kCGImageSourceThumbnailMaxPixelSize : @(maxPixelValue)};
+    
     CGImageRef resizedCGImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, (CFDictionaryRef)options);
-    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:scale orientation:self.imageOrientation];
+    UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:self.scale orientation:self.imageOrientation];
     
     CFRelease(imageSource);
     CGImageRelease(resizedCGImage);
     
     return resizedImage;
+}
+
+#pragma makr - other
+
+- (CGFloat)jp_whRatio {
+    return (self.size.width / self.size.height);
+}
+
+- (CGFloat)jp_hwRatio {
+    return (self.size.height / self.size.width);
+}
+
+- (BOOL)jp_writeToFile:(NSString *)path isPNGType:(BOOL)isPNGType {
+    NSData *data = isPNGType ? UIImagePNGRepresentation(self) : UIImageJPEGRepresentation(self, 1);
+    if (data) {
+        return [data writeToURL:[NSURL fileURLWithPath:path] atomically:YES];
+    }
+    return NO;
 }
 
 @end

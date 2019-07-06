@@ -15,9 +15,11 @@
 		1A2075F920E7B8800073B681 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A2075F820E7B8800073B681 /* main.m */; };
 		1A20760320E7B8800073B681 /* JPImageResizingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A20760220E7B8800073B681 /* JPImageResizingTests.m */; };
 		1A20760E20E7B8800073B681 /* JPImageResizingUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A20760D20E7B8800073B681 /* JPImageResizingUITests.m */; };
-		1A20761E20E7B8D70073B681 /* girl.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A20761C20E7B8D70073B681 /* girl.jpg */; };
+		1A20761E20E7B8D70073B681 /* girl@1x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A20761C20E7B8D70073B681 /* girl@1x.jpg */; };
 		1A20761F20E7B8D70073B681 /* UIImage+JPExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A20761D20E7B8D70073B681 /* UIImage+JPExtension.m */; };
 		1A20762120E7B9240073B681 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 1A20762020E7B9230073B681 /* README.md */; };
+		1A5C0E3F22D0D35D00D4BF31 /* girl@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A5C0E3E22D0D35D00D4BF31 /* girl@2x.jpg */; };
+		1A5C0E4122D0F85700D4BF31 /* girl@3x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A5C0E4022D0F85700D4BF31 /* girl@3x.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,9 +57,11 @@
 		1A20760D20E7B8800073B681 /* JPImageResizingUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JPImageResizingUITests.m; sourceTree = "<group>"; };
 		1A20760F20E7B8800073B681 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1A20761B20E7B8D70073B681 /* UIImage+JPExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+JPExtension.h"; sourceTree = "<group>"; };
-		1A20761C20E7B8D70073B681 /* girl.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = girl.jpg; sourceTree = "<group>"; };
+		1A20761C20E7B8D70073B681 /* girl@1x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "girl@1x.jpg"; sourceTree = "<group>"; };
 		1A20761D20E7B8D70073B681 /* UIImage+JPExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+JPExtension.m"; sourceTree = "<group>"; };
 		1A20762020E7B9230073B681 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		1A5C0E3E22D0D35D00D4BF31 /* girl@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "girl@2x.jpg"; sourceTree = "<group>"; };
+		1A5C0E4022D0F85700D4BF31 /* girl@3x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "girl@3x.jpg"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +113,9 @@
 		1A2075E820E7B87F0073B681 /* JPImageResizing */ = {
 			isa = PBXGroup;
 			children = (
-				1A20761C20E7B8D70073B681 /* girl.jpg */,
+				1A20761C20E7B8D70073B681 /* girl@1x.jpg */,
+				1A5C0E3E22D0D35D00D4BF31 /* girl@2x.jpg */,
+				1A5C0E4022D0F85700D4BF31 /* girl@3x.jpg */,
 				1A2075E920E7B87F0073B681 /* AppDelegate.h */,
 				1A2075EA20E7B87F0073B681 /* AppDelegate.m */,
 				1A2075EC20E7B87F0073B681 /* ViewController.h */,
@@ -246,10 +252,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A5C0E4122D0F85700D4BF31 /* girl@3x.jpg in Resources */,
 				1A2075F620E7B8800073B681 /* LaunchScreen.storyboard in Resources */,
-				1A20761E20E7B8D70073B681 /* girl.jpg in Resources */,
+				1A20761E20E7B8D70073B681 /* girl@1x.jpg in Resources */,
 				1A20762120E7B9240073B681 /* README.md in Resources */,
 				1A2075F320E7B8800073B681 /* Assets.xcassets in Resources */,
+				1A5C0E3F22D0D35D00D4BF31 /* girl@2x.jpg in Resources */,
 				1A2075F120E7B87F0073B681 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
