@@ -12,10 +12,12 @@
 
 #pragma makr - ui
 
+/** UI缩略（按比例缩略） */
 - (UIImage *)jp_uiResizeImageWithScale:(CGFloat)scale {
     return [self jp_uiResizeImageWithLogicWidth:(self.size.width * scale)];
 }
 
+/** UI缩略（按逻辑宽度缩略） */
 - (UIImage *)jp_uiResizeImageWithLogicWidth:(CGFloat)logicWidth {
     if (logicWidth >= self.size.width) return self;
     CGFloat w = logicWidth;
@@ -29,20 +31,24 @@
     }
 }
 
+/** UI缩略（按像素宽度缩略） */
 - (UIImage *)jp_uiResizeImageWithPixelWidth:(CGFloat)pixelWidth {
     return [self jp_uiResizeImageWithLogicWidth:(pixelWidth / self.scale)];
 }
 
 #pragma makr - cg
 
+/** CG缩略（按比例缩略） */
 - (UIImage *)jp_cgResizeImageWithScale:(CGFloat)scale {
     return [self jp_cgResizeImageWithLogicWidth:(self.size.width * scale)];
 }
 
+/** CG缩略（按逻辑宽度缩略） */
 - (UIImage *)jp_cgResizeImageWithLogicWidth:(CGFloat)logicWidth {
     return [self jp_cgResizeImageWithPixelWidth:(logicWidth * self.scale)];
 }
 
+/** CG缩略（按像素宽度缩略） */
 - (UIImage *)jp_cgResizeImageWithPixelWidth:(CGFloat)pixelWidth {
     if (pixelWidth >= (self.size.width * self.scale)) return self;
     CGFloat pixelHeight = pixelWidth * self.jp_hwRatio;
@@ -68,14 +74,17 @@
 
 #pragma makr - io
 
+/** IO缩略（按比例缩略） */
 - (UIImage *)jp_ioResizeImageWithScale:(CGFloat)scale isPNGType:(BOOL)isPNGType {
     return [self jp_ioResizeImageWithLogicWidth:(self.size.width * scale) isPNGType:isPNGType];
 }
 
+/** IO缩略（按逻辑宽度缩略） */
 - (UIImage *)jp_ioResizeImageWithLogicWidth:(CGFloat)logicWidth isPNGType:(BOOL)isPNGType {
     return [self jp_ioResizeImageWithPixelWidth:(logicWidth * self.scale) isPNGType:isPNGType];
 }
 
+/** IO缩略（按像素宽度缩略） */
 - (UIImage *)jp_ioResizeImageWithPixelWidth:(CGFloat)pixelWidth isPNGType:(BOOL)isPNGType {
     if (pixelWidth >= (self.size.width * self.scale)) return self;
     
