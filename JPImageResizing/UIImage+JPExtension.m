@@ -50,22 +50,39 @@
 
 /** CG缩略（按像素宽度缩略） */
 - (UIImage *)jp_cgResizeImageWithPixelWidth:(CGFloat)pixelWidth {
+    CGImageRef cgImage = self.CGImage;
+    if (!cgImage) return self;
+    
     if (pixelWidth >= (self.size.width * self.scale)) return self;
     CGFloat pixelHeight = pixelWidth * self.jp_hwRatio;
     
-    CGImageRef cgImage = self.CGImage;
-    if (!cgImage) return nil;
-    size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
-    size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
-    CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
+    /**
+     * 参考：https://www.jianshu.com/p/2e45a2ea7b62
+     * context 的创建使用了 YYKit 的方法。
+     */
     
-    CGContextRef context = CGBitmapContextCreate(nil, (size_t)pixelWidth, (size_t)pixelHeight, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    CGImageAlphaInfo alphaInfo = CGImageGetAlphaInfo(cgImage) & kCGBitmapAlphaInfoMask;
+    BOOL hasAlpha = NO;
+    if (alphaInfo == kCGImageAlphaPremultipliedLast ||
+        alphaInfo == kCGImageAlphaPremultipliedFirst ||
+        alphaInfo == kCGImageAlphaLast ||
+        alphaInfo == kCGImageAlphaFirst) {
+        hasAlpha = YES;
+    }
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrder32Host;
+    bitmapInfo |= hasAlpha ? kCGImageAlphaPremultipliedFirst : kCGImageAlphaNoneSkipFirst;
+    
+    CGContextRef context = CGBitmapContextCreate(NULL, pixelWidth, pixelHeight, 8, 0, colorSpace, bitmapInfo);
+    
     CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
     CGContextDrawImage(context, CGRectMake(0, 0, pixelWidth, pixelHeight), cgImage);
     CGImageRef resizedCGImage = CGBitmapContextCreateImage(context);
+    
     UIImage *resizedImage = [UIImage imageWithCGImage:resizedCGImage scale:self.scale orientation:self.imageOrientation];
     
+    CGColorSpaceRelease(colorSpace);
     CGContextRelease(context);
     CGImageRelease(resizedCGImage);
     
