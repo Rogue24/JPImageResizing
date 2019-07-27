@@ -56,9 +56,16 @@
     if (pixelWidth >= (self.size.width * self.scale)) return self;
     CGFloat pixelHeight = pixelWidth * self.jp_hwRatio;
     
+//    size_t bitsPerComponent = CGImageGetBitsPerComponent(cgImage);
+//    size_t bytesPerRow = CGImageGetBytesPerRow(cgImage);
+//    CGColorSpaceRef colorSpace = CGImageGetColorSpace(cgImage);
+//    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(cgImage);
+//    CGContextRef context = CGBitmapContextCreate(NULL, pixelWidth, pixelHeight, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
     /**
+     * 在某些手机快捷键屏幕截图生成的图片，通过上面方式创建的 context 为空
+     * 因为生成的图片的 CGBitmapInfo 为 kCGImageAlphaLast 或 kCGImageByteOrder16Little，iOS不支持这种格式。
      * 参考：https://www.jianshu.com/p/2e45a2ea7b62
-     * context 的创建使用了 YYKit 的方法。
+     * 解决方法：context 的创建采用了 YYKit 的方式。
      */
     
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
